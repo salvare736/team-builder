@@ -1,25 +1,57 @@
-import logo from './logo.svg';
+import React, { useState } from 'react';
+import MemberForm from './MemberForm';
+import Member from './Member';
 import './App.css';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+const initialFormValues = {
+  name: '',
+  email: '',
+  role: '',
+  key: ''
 }
 
-export default App;
+const initialMembers = [
+  {name: 'Cynthia', email: 'SinnohChamp@gmail.com', role: 'Pokemon Champion', key: 'garchompAce'},
+  {name: 'Steven', email: 'HoennChamp@gmail.com', role: 'Pokemon Champion', key: 'metagrossAce'}
+]
+
+export default function App() {
+  const [members, setMembers] = useState(initialMembers);
+  const [formValues, setFormValues] = useState(initialFormValues);
+
+  const updateForm = (inputName, inputValue) => {
+    setFormValues({
+      ...formValues,
+      [inputName]: inputValue
+    });
+  }
+
+  const submitForm = () => {
+    const newMember = {
+      name: formValues.name.trim(),
+      email: formValues.email.trim(),
+      role: formValues.role,
+      key: Math.random()
+    };
+    if (!newMember.name || !newMember.email || !newMember.role)
+    return;
+    setMembers([...members, newMember]);
+    setFormValues(initialFormValues);
+  }
+
+  return (
+    <div className='container'>
+      <h1>Form App</h1>
+      <MemberForm
+        values={formValues}
+        update={updateForm}
+        submit={submitForm}
+      />
+      {members.map(member => {
+        return (
+          <Member key={member.key} details={member} />
+        )
+      })}
+    </div>
+  )
+}
